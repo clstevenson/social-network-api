@@ -1,4 +1,5 @@
 const { Thought, User } = require('../models');
+const { findById } = require('../models/User');
 
 // 3 GET routes: all thoughts, individual thought, reactions to a given thought
 const getThoughts = async (req, res) => {
@@ -87,11 +88,39 @@ const updateThought = async (req, res) => {
   }
 }
 
+// delete thought by its ID
+const deleteThought = async (req, res) => {
+  try {
+    const thought = await Thought.findByIdAndDelete(req.params.id);
+    if (thought) {
+      return res.json(`Thought by ${thought.username} was deleted.`);
+    }
+    res.status(400).json(`Could not find thought with id ${req.params.id}`);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+
+}
+
+// delete reaction by ID; pass reactionId property as JSON in req.body
+const deleteReaction = async (req, res) => {
+  try {
+    const thought = await Thought.findById(req.params.id);
+    thought.reactions = thought.reactions.filter( (rxn) => rxn.reactionId.toString() !== req.body.reactionId);
+    thought.save();
+    res.json(thought);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+}
+
 module.exports = {
   getThoughts,
   getOneThought,
   getReactions,
   createThought,
   createReaction,
-  updateThought
+  updateThought,
+  deleteThought,
+  deleteReaction
 };

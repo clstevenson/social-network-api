@@ -29,7 +29,19 @@ const getOneUser = async (req, res) => {
   }
 }
 
+// POST routes
+// Create a new user: supply username and email as input (req.body)
+const createUser = async (req, res) => {
+  try {
+    const newUser = await User.create(req.body);
+    res.json(newUser);
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+}
+
 module.exports = {
   getUsers,
   getOneUser,
+  createUser,
 };

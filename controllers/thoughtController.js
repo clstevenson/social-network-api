@@ -67,7 +67,23 @@ const createReaction = async (req, res) => {
     );
     res.json(reaction);
   } catch (err) {
-    res.status(500).json
+    res.status(500).json(err);
+  }
+}
+
+// update a thought by its ID
+// req.body contains updated thoughtText
+// (assume username doesn't change)
+const updateThought = async (req, res) => {
+  try {
+    const thought = await Thought.findByIdAndUpdate(
+      req.params.id,
+      { thoughtText: req.body.thoughtText },
+      { new: true }
+    ).select('-__v');
+    res.json(thought);
+  } catch (err) {
+    res.status(500).json(err);
   }
 }
 
@@ -76,5 +92,6 @@ module.exports = {
   getOneThought,
   getReactions,
   createThought,
-  createReaction
+  createReaction,
+  updateThought
 };

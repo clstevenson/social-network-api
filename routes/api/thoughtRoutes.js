@@ -4,14 +4,15 @@ const {
   getOneThought,
   getReactions,
   createThought,
-  createReaction
+  createReaction,
+  updateThought
 } = require('../../controllers/thoughtController');
 
 // /api/thoughts routes
 router.route('/').get(getThoughts).post(createThought);
 
 // /api/thoughts/:id routes
-router.route('/:id').get(getOneThought);
+router.route('/:id').get(getOneThought).put(updateThought);
 
 // api/thoughts/:id/reactions
 router.route('/:id/reactions').get(getReactions).post(createReaction);

@@ -78,10 +78,51 @@ const deleteUser = async (req, res) => {
   }
 }
 
+// add a new friend to a given user
+// constraints: cannot friend someone twice, and cannot friend yourself
+const addFriend = async (req, res) => {
+  try {
+    if (req.params.userId === req.params.friendId) {
+      return res.status(400).json('Error: a person cannot befriend themself.');
+    }
+    const user = await User.findById(req.params.userId);
+    if (user.friends.find( friend => friend._id.toString() === req.params.friendId )) {
+      return res.status(400).json(`Error: already friended by user ${req.params.friendId}`);
+    }
+    user.friends.push({_id: req.params.friendId});
+    user.save();
+    res.json(user);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+}
+
+// de-friending a user
+const deleteFriend = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    // see if the person is actually a friend
+    if (!user.friends.find( friend => friend._id.toString() === req.params.friendId )) {
+      return res.status(400).json(`Error: use ${req.params.friendId} is not a friend.`);
+    }
+    const numFriends = user.friends.length;
+    // remove the former friend's id from the array
+    user.friends = user.friends.filter( friend => friend._id.toString() !== req.params.friendId );
+    // see if the person was a friend or not
+    if (numFriends === user.friends.length) return res(400).json('Error: No such friend.');
+    user.save();
+    res.json(user);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+}
+
 module.exports = {
   getUsers,
   getOneUser,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  addFriend,
+  deleteFriend
 };

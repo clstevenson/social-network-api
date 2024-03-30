@@ -118,7 +118,6 @@ const deleteReaction = async (req, res) => {
 module.exports = {
   getThoughts,
   getOneThought,
-  getReactions,
   createThought,
   createReaction,
   updateThought,

@@ -25,6 +25,11 @@ const reactionSchema = new Schema(
       get: (d) => d.toLocaleString(),
     },
   },
+  {
+    toJSON: {
+      getters: true,
+    },
+  },
 );
 
 module.exports = reactionSchema;

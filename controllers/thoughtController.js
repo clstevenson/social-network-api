@@ -32,9 +32,9 @@ const getReactions = async (req, res) => {
 }
 
 // Create a new thought post for a given user
-// supply: thoughtText, username, id
+// supply: thoughtText, username, id (as JSON in req.body)
 // Normally the latter two would probably be part of a session cookie set
-// after successful login (don't check for mismatch)
+// after successful login (so I'm not checking for mismatch or verifying that the user exists)
 const createThought = async (req, res) => {
   try {
     const thought = await Thought.create(req.body);
@@ -52,6 +52,7 @@ const createThought = async (req, res) => {
 // creates a reaction to a post
 // data input: reactionBody (JSON), username (JSON), thoughtID (req.param)
 // returns the updated thought + all rxns to it
+// presumably only logged in user can add a rxn so no validation of username
 const createReaction = async (req, res) => {
   try {
     const reaction = await Thought.findByIdAndUpdate(
